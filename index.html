@@ -12,15 +12,49 @@
             <div id="currency-section">
                 <h3 id="first-currency">1 Türk Lirası</h3>
                 <h1 id="second-currency">0,023 ABD Doları</h1>
-                <h4 id="date">22 Şub 06:47 UTC · Sağlayan: Morningstar · Sorumluluk reddi beyanı</h4>
+                <h4 id="date"><span id="now"></span>· Sağlayan: Frankfurter.dev Sorumluluk reddi beyanı</h4>
             </div>
             <div id="currency-inputs">
-                <input type="text" id="first-currencyInput">
-                <input type="text" id="second-currencyInput">
+                <div id="first-currency">
+                    <input type="number" id="first-currency-number">
+                    <select id="first-currency-option">
+                        <option value="EUR">EUR</option>
+                        <option value="TRY">TRY</option>
+                        <option value="USD">USD</option>
+                        <option value="GBP">GBP</option>
+                        <option value="JPY">JPY</option>
+                        <option value="CAD">CAD</option>
+                        <option value="AUD">AUD</option>
+                    </select>
+                </div>
+                <div id="second-currency">
+                    <input type="number" id="second-currency-number">
+                    <select id="second-currency-option">
+                        <option value="EUR">EUR</option>
+                        <option value="TRY">TRY</option>
+                        <option value="USD">USD</option>
+                        <option value="GBP">GBP</option>
+                        <option value="JPY">JPY</option>
+                        <option value="CAD">CAD</option>
+                        <option value="AUD">AUD</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div id="right-section">
-            <div id="currency-graph"></div>
+            <div id="currency-graph">
+                <div class="time-selector">
+                    <button class="time-btn">1G</button>
+                    <button class="time-btn">5G</button>
+                    <button class="time-btn">1A</button>
+                    <button class="time-btn">1Y</button>
+                    <button class="time-btn">5Y</button>
+                    <button class="time-btn">Maks.</button>
+                </div>
+                <div id="graph">
+                    
+                </div>
+            </div>
         </div>
     </div>
     
