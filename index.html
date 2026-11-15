@@ -3,58 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currency Converter</title>
+    <meta name="description" content="Dövizleri çevirin ve geçmiş referans kurlarını inceleyin.">
+    <title>Döviz Çevirici</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="main-container">
-        <div id="left-section">
+    <main id="main-container">
+        <section id="left-section" aria-labelledby="page-title">
+            <h1 id="page-title">Döviz çevirici</h1>
             <div id="currency-section">
-                <h3 id="first-currency">1 TRY eşittir</h3>
-                <h1 id="second-currency" aria-live="polite">—</h1>
-                <p id="date"><span id="now"></span> · Frankfurter referans kuru</p>
+                <p id="first-currency">1 TRY eşittir</p>
+                <p id="second-currency" aria-live="polite">—</p>
+                <p id="date">
+                    <span id="now"></span><a href="https://frankfurter.dev/">Frankfurter referans kuru</a>
+                </p>
                 <p id="rate-status" role="status"></p>
                 <button id="retry-rate" type="button" class="utility-btn" hidden>Yeniden dene</button>
             </div>
+
             <div id="currency-inputs">
                 <div class="currency-field">
-                    <input type="number" id="first-currency-number" aria-label="Kaynak tutar" aria-describedby="amount-error" min="0" step="any" value="1">
-                    <select id="first-currency-option" aria-label="Kaynak para birimi">
-                        <option value="EUR">EUR</option>
-                        <option value="TRY" selected>TRY</option>
-                        <option value="USD">USD</option>
-                        <option value="GBP">GBP</option>
-                        <option value="JPY">JPY</option>
-                        <option value="CAD">CAD</option>
-                        <option value="AUD">AUD</option>
-                    </select>
+                    <div class="field">
+                        <label for="first-currency-number">Tutar</label>
+                        <input type="number" id="first-currency-number" aria-describedby="amount-error"
+                               min="0" step="any" inputmode="decimal" value="1">
+                    </div>
+                    <div class="field">
+                        <label for="first-currency-option">Kaynak</label>
+                        <select id="first-currency-option">
+                            <option value="EUR">EUR</option>
+                            <option value="TRY" selected>TRY</option>
+                            <option value="USD">USD</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="CAD">CAD</option>
+                            <option value="AUD">AUD</option>
+                        </select>
+                    </div>
                 </div>
-                <button id="swap-currencies" type="button" class="utility-btn">Para birimlerini değiştir</button>
+
+                <button id="swap-currencies" type="button" class="utility-btn">
+                    <span aria-hidden="true">⇄</span> Para birimlerini değiştir
+                </button>
+
                 <div class="currency-field">
-                    <input type="number" id="second-currency-number" aria-label="Çevrilen tutar" readonly>
-                    <select id="second-currency-option" aria-label="Hedef para birimi">
-                        <option value="EUR">EUR</option>
-                        <option value="TRY">TRY</option>
-                        <option value="USD" selected>USD</option>
-                        <option value="GBP">GBP</option>
-                        <option value="JPY">JPY</option>
-                        <option value="CAD">CAD</option>
-                        <option value="AUD">AUD</option>
-                    </select>
+                    <div class="field">
+                        <label for="second-currency-number">Sonuç</label>
+                        <input type="text" id="second-currency-number" readonly>
+                    </div>
+                    <div class="field">
+                        <label for="second-currency-option">Hedef</label>
+                        <select id="second-currency-option">
+                            <option value="EUR">EUR</option>
+                            <option value="TRY">TRY</option>
+                            <option value="USD" selected>USD</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="CAD">CAD</option>
+                            <option value="AUD">AUD</option>
+                        </select>
+                    </div>
                 </div>
                 <p id="amount-error" role="status"></p>
             </div>
-        </div>
+        </section>
         <section id="right-section" aria-labelledby="history-heading">
             <div id="currency-graph">
                 <h2 id="history-heading">Kur geçmişi</h2>
                 <div class="time-selector" role="group" aria-label="Grafik dönemi">
-                    <button class="time-btn" type="button" data-range="day" aria-pressed="false">1G</button>
-                    <button class="time-btn" type="button" data-range="week" aria-pressed="false">5G</button>
-                    <button class="time-btn active" type="button" data-range="month" aria-pressed="true">1A</button>
-                    <button class="time-btn" type="button" data-range="year" aria-pressed="false">1Y</button>
-                    <button class="time-btn" type="button" data-range="fiveYears" aria-pressed="false">5Y</button>
-                    <button class="time-btn" type="button" data-range="max" aria-pressed="false">Maks.</button>
+                    <button class="time-btn" type="button" data-range="day" aria-pressed="false" aria-label="Son yayımlanan günlük kur">1G</button>
+                    <button class="time-btn" type="button" data-range="week" aria-pressed="false" aria-label="Son 5 gün">5G</button>
+                    <button class="time-btn active" type="button" data-range="month" aria-pressed="true" aria-label="Son 30 gün">1A</button>
+                    <button class="time-btn" type="button" data-range="year" aria-pressed="false" aria-label="Son 1 yıl">1Y</button>
+                    <button class="time-btn" type="button" data-range="fiveYears" aria-pressed="false" aria-label="Son 5 yıl">5Y</button>
+                    <button class="time-btn" type="button" data-range="max" aria-pressed="false" aria-label="Tüm geçmiş">Maks.</button>
                 </div>
                 <p id="history-status" role="status"></p>
                 <button id="retry-history" type="button" class="utility-btn" hidden>Grafiği yeniden yükle</button>
@@ -70,8 +92,8 @@
                 </div>
             </div>
         </section>
-    </div>
-    
+    </main>
+
     <script src="rates.js"></script>
     <script src="history.js"></script>
     <script src="app.js"></script>

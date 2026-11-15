@@ -11,6 +11,7 @@ const rateStatus = document.getElementById("rate-status");
 const amountError = document.getElementById("amount-error");
 const retry = document.getElementById("retry-rate");
 const swap = document.getElementById("swap-currencies");
+const formatAmount = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const formatRate = new Intl.NumberFormat("tr-TR", { maximumSignificantDigits: 7 });
 const formatDate = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeZone: "UTC" });
 let pendingRequest;
@@ -23,7 +24,7 @@ function showAmount() {
     amountError.textContent = invalid ? "Sıfır veya pozitif bir tutar girin." : "";
 
     const value = input * currentRate;
-    converted.value = !invalid && Number.isFinite(value) ? value.toFixed(2) : "";
+    converted.value = !invalid && Number.isFinite(value) ? formatAmount.format(value) : "";
 }
 
 async function loadRate() {

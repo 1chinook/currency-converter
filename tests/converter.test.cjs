@@ -44,11 +44,11 @@ test("converts from the published reference rate and handles zero and negative i
     await settle();
     const input = field("first-currency-number");
     const output = field("second-currency-number");
-    assert.equal(output.value, "2.50");
+    assert.equal(output.value, "2,50");
     assert.match(field("now").textContent, /13/);
     input.valueAsNumber = 0;
     input.handlers.input();
-    assert.equal(output.value, "0.00");
+    assert.equal(output.value, "0,00");
     input.valueAsNumber = -1;
     input.handlers.input();
     assert.equal(output.value, "");
@@ -63,7 +63,7 @@ test("ignores an outdated response and swaps in the inverse pair", async () => {
     requests[1].finish({ rate: 40, date: "2026-11-13" });
     requests[0].finish({ rate: 0.025, date: "2026-11-12" });
     await settle();
-    assert.equal(field("second-currency-number").value, "4000.00");
+    assert.equal(field("second-currency-number").value, "4.000,00");
 });
 
 test("can retry a failed response and converts identical currencies without a request", async () => {
@@ -80,6 +80,6 @@ test("can retry a failed response and converts identical currencies without a re
     requests[1].finish({ rate: 0.025, date: "2026-11-13" });
     await settle();
     assert.equal(requests.length, 2);
-    assert.equal(field("second-currency-number").value, "100.00");
+    assert.equal(field("second-currency-number").value, "100,00");
     assert.equal(field("retry-rate").hidden, true);
 });
