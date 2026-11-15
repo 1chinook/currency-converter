@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currency Conventer</title>
+    <title>Currency Converter</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="main-container">
         <div id="left-section">
             <div id="currency-section">
-                <h3 id="first-currency">1 Türk Lirası</h3>
-                <h1 id="second-currency">0,023 ABD Doları</h1>
-                <h4 id="date"><span id="now"></span>· Sağlayan: Frankfurter.dev Sorumluluk reddi beyanı</h4>
+                <h3 id="first-currency">1 TRY eşittir</h3>
+                <h1 id="second-currency" aria-live="polite">—</h1>
+                <h4 id="date"><span id="now"></span> · Sağlayan: Frankfurter</h4>
             </div>
             <div id="currency-inputs">
-                <div id="first-currency">
-                    <input type="number" id="first-currency-number">
-                    <select id="first-currency-option">
+                <div class="currency-field">
+                    <input type="number" id="first-currency-number" aria-label="Kaynak tutar" step="any" value="1">
+                    <select id="first-currency-option" aria-label="Kaynak para birimi">
                         <option value="EUR">EUR</option>
-                        <option value="TRY">TRY</option>
+                        <option value="TRY" selected>TRY</option>
                         <option value="USD">USD</option>
                         <option value="GBP">GBP</option>
                         <option value="JPY">JPY</option>
@@ -27,12 +27,12 @@
                         <option value="AUD">AUD</option>
                     </select>
                 </div>
-                <div id="second-currency">
-                    <input type="number" id="second-currency-number">
-                    <select id="second-currency-option">
+                <div class="currency-field">
+                    <input type="number" id="second-currency-number" aria-label="Çevrilen tutar" readonly>
+                    <select id="second-currency-option" aria-label="Hedef para birimi">
                         <option value="EUR">EUR</option>
                         <option value="TRY">TRY</option>
-                        <option value="USD">USD</option>
+                        <option value="USD" selected>USD</option>
                         <option value="GBP">GBP</option>
                         <option value="JPY">JPY</option>
                         <option value="CAD">CAD</option>
@@ -58,6 +58,6 @@
         </div>
     </div>
     
+    <script src="app.js"></script>
 </body>
-<script src="app.js"></script>
 </html>

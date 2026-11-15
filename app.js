@@ -1,48 +1,64 @@
-const firstInput = document.getElementById("first-currency-number");
-const secondInput = document.getElementById("second-currency-number");
-const firstSelect = document.getElementById("first-currency-option");
-const secondSelect = document.getElementById("second-currency-option");
+"use strict";
+
+const amount = document.getElementById("first-currency-number");
+const converted = document.getElementById("second-currency-number");
+const source = document.getElementById("first-currency-option");
+const target = document.getElementById("second-currency-option");
+const sourceLabel = document.getElementById("first-currency");
+const rateLabel = document.getElementById("second-currency");
+const dateLabel = document.getElementById("now");
+const formatRate = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 6 });
 const timeButtons = document.querySelectorAll(".time-btn");
+let pendingRequest;
+let currentRate;
 
-let nowTime = new Date()
-const nTime = nowTime.toLocaleString("tr-TR")
+function showAmount() {
+    const value = amount.valueAsNumber * currentRate;
+    converted.value = Number.isFinite(value) ? value.toFixed(2) : "";
+}
 
+async function loadRate() {
+    pendingRequest?.abort();
+    const request = new AbortController();
+    pendingRequest = request;
+    const from = source.value;
+    const to = target.value;
 
-const host = 'api.frankfurter.app';
-
-async function convert() {
-    const amount = firstInput.value;
-    const from = firstSelect.value;
-    const to = secondSelect.value;
-
-    if (from === to) {
-        secondInput.value = amount;
-        return;
-    }
+    currentRate = undefined;
+    showAmount();
+    sourceLabel.textContent = `1 ${from} eşittir`;
+    rateLabel.textContent = "—";
+    dateLabel.textContent = "";
 
     try {
-        const res = await fetch(`https://${host}/latest?amount=${amount}&from=${from}&to=${to}`);
-        const data = await res.json();
-        
-        secondInput.value = data.rates[to].toFixed(2);
-        
-        document.getElementById("now").innerText = nTime;
-        document.getElementById("first-currency").innerText = `1 ${from} eşittir`;
-        document.getElementById("second-currency").innerText = `${(data.rates[to] / amount).toFixed(4)} ${to}`;
-    } catch (err) {
-        console.error("Kur çekilirken hata:", err);
+        let rate = 1;
+        let date = "";
+        if (from !== to) {
+            const url = new URL("https://api.frankfurter.app/latest");
+            url.search = new URLSearchParams({ from, to });
+            const response = await fetch(url, { signal: request.signal });
+            if (!response.ok) throw new Error("Kur alınamadı");
+            const data = await response.json();
+            rate = data.rates?.[to];
+            date = data.date;
+            if (!Number.isFinite(rate)) throw new Error("Kur eksik");
+        }
+        if (pendingRequest !== request) return;
+        currentRate = rate;
+        rateLabel.textContent = `${formatRate.format(rate)} ${to}`;
+        dateLabel.textContent = date;
+        showAmount();
+    } catch {
+        if (pendingRequest === request) rateLabel.textContent = "Kur alınamadı";
     }
 }
 
-firstInput.addEventListener("input", convert);
-firstSelect.addEventListener("change", convert);
-secondSelect.addEventListener("change", convert);
-
-timeButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        timeButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        
-     
+amount.addEventListener("input", showAmount);
+source.addEventListener("change", loadRate);
+target.addEventListener("change", loadRate);
+timeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        timeButtons.forEach((item) => item.classList.toggle("active", item === button));
     });
 });
+loadRate();

@@ -76,11 +76,11 @@ body{
     height: 85%;
 }
 
-#first-currency, #second-currency{
+.currency-field{
     display: flex;
 }
 
-#first-currency input, #second-currency input, #first-currency select, #second-currency select{
+.currency-field input, .currency-field select{
     background-color: var(--main-input-color);
     outline: none;
 }
