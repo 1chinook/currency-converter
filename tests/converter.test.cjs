@@ -20,6 +20,7 @@ function startApp() {
     const requests = [];
     const context = vm.createContext({
         URL, URLSearchParams, AbortController, setTimeout, clearTimeout,
+        CurrencyHistory: { clear() {}, setPair() {} },
         document: { getElementById: field, querySelectorAll: () => [] },
         fetch: (url, options) => new Promise((resolve) => {
             requests.push({

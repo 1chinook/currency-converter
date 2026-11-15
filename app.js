@@ -11,7 +11,6 @@ const rateStatus = document.getElementById("rate-status");
 const amountError = document.getElementById("amount-error");
 const retry = document.getElementById("retry-rate");
 const swap = document.getElementById("swap-currencies");
-const timeButtons = document.querySelectorAll(".time-btn");
 const formatRate = new Intl.NumberFormat("tr-TR", { maximumSignificantDigits: 7 });
 const formatDate = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeZone: "UTC" });
 let pendingRequest;
@@ -40,6 +39,7 @@ async function loadRate() {
     rateLabel.textContent = "—";
     dateLabel.textContent = "";
     retry.hidden = true;
+    CurrencyHistory.clear();
     rateStatus.textContent = from === to ? "" : "Referans kur yükleniyor…";
 
     try {
@@ -53,9 +53,11 @@ async function loadRate() {
         dateLabel.textContent = reference.date ? formatDate.format(new Date(reference.date)) : "";
         rateStatus.textContent = from === to ? "Aynı para birimi seçili." : "";
         showAmount();
+        CurrencyHistory.setPair(from, to, reference);
     } catch {
         if (pendingRequest !== request) return;
         retry.hidden = false;
+        CurrencyHistory.clear("Kur alınamadığı için grafik gösterilemiyor.");
         rateStatus.textContent = "Kur alınamadı. Bağlantını kontrol edip yeniden dene.";
     }
 }
@@ -69,9 +71,4 @@ swap.addEventListener("click", () => {
     loadRate();
 });
 
-timeButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        timeButtons.forEach((item) => item.classList.toggle("active", item === button));
-    });
-});
 loadRate();

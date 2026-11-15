@@ -45,24 +45,35 @@
                 <p id="amount-error" role="status"></p>
             </div>
         </div>
-        <div id="right-section">
+        <section id="right-section" aria-labelledby="history-heading">
             <div id="currency-graph">
-                <div class="time-selector">
-                    <button class="time-btn">1G</button>
-                    <button class="time-btn">5G</button>
-                    <button class="time-btn">1A</button>
-                    <button class="time-btn">1Y</button>
-                    <button class="time-btn">5Y</button>
-                    <button class="time-btn">Maks.</button>
+                <h2 id="history-heading">Kur geçmişi</h2>
+                <div class="time-selector" role="group" aria-label="Grafik dönemi">
+                    <button class="time-btn" type="button" data-range="day" aria-pressed="false">1G</button>
+                    <button class="time-btn" type="button" data-range="week" aria-pressed="false">5G</button>
+                    <button class="time-btn active" type="button" data-range="month" aria-pressed="true">1A</button>
+                    <button class="time-btn" type="button" data-range="year" aria-pressed="false">1Y</button>
+                    <button class="time-btn" type="button" data-range="fiveYears" aria-pressed="false">5Y</button>
+                    <button class="time-btn" type="button" data-range="max" aria-pressed="false">Maks.</button>
                 </div>
-                <div id="graph">
-                    
+                <p id="history-status" role="status"></p>
+                <button id="retry-history" type="button" class="utility-btn" hidden>Grafiği yeniden yükle</button>
+                <div id="graph" hidden>
+                    <canvas id="history-canvas" aria-hidden="true"></canvas>
+                    <p id="history-summary"></p>
+                    <p id="point-value" aria-live="polite"></p>
+                    <label id="point-controls" for="point-picker">
+                        Kayıt seç
+                        <input id="point-picker" type="range" min="0" max="0" value="0"
+                               aria-describedby="point-value">
+                    </label>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
     
     <script src="rates.js"></script>
+    <script src="history.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
