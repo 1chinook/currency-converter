@@ -7,14 +7,24 @@ const target = document.getElementById("second-currency-option");
 const sourceLabel = document.getElementById("first-currency");
 const rateLabel = document.getElementById("second-currency");
 const dateLabel = document.getElementById("now");
-const formatRate = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 6 });
+const rateStatus = document.getElementById("rate-status");
+const amountError = document.getElementById("amount-error");
+const retry = document.getElementById("retry-rate");
+const swap = document.getElementById("swap-currencies");
 const timeButtons = document.querySelectorAll(".time-btn");
+const formatRate = new Intl.NumberFormat("tr-TR", { maximumSignificantDigits: 7 });
+const formatDate = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeZone: "UTC" });
 let pendingRequest;
 let currentRate;
 
 function showAmount() {
-    const value = amount.valueAsNumber * currentRate;
-    converted.value = Number.isFinite(value) ? value.toFixed(2) : "";
+    const input = amount.valueAsNumber;
+    const invalid = Number.isFinite(input) && input < 0;
+    amount.setAttribute("aria-invalid", String(invalid));
+    amountError.textContent = invalid ? "Sıfır veya pozitif bir tutar girin." : "";
+
+    const value = input * currentRate;
+    converted.value = !invalid && Number.isFinite(value) ? value.toFixed(2) : "";
 }
 
 async function loadRate() {
@@ -29,33 +39,36 @@ async function loadRate() {
     sourceLabel.textContent = `1 ${from} eşittir`;
     rateLabel.textContent = "—";
     dateLabel.textContent = "";
+    retry.hidden = true;
+    rateStatus.textContent = from === to ? "" : "Referans kur yükleniyor…";
 
     try {
-        let rate = 1;
-        let date = "";
-        if (from !== to) {
-            const url = new URL("https://api.frankfurter.app/latest");
-            url.search = new URLSearchParams({ from, to });
-            const response = await fetch(url, { signal: request.signal });
-            if (!response.ok) throw new Error("Kur alınamadı");
-            const data = await response.json();
-            rate = data.rates?.[to];
-            date = data.date;
-            if (!Number.isFinite(rate)) throw new Error("Kur eksik");
-        }
+        const reference = from === to
+            ? { rate: 1, date: "" }
+            : await Frankfurter.latest(from, to, request);
         if (pendingRequest !== request) return;
-        currentRate = rate;
-        rateLabel.textContent = `${formatRate.format(rate)} ${to}`;
-        dateLabel.textContent = date;
+
+        currentRate = reference.rate;
+        rateLabel.textContent = `${formatRate.format(currentRate)} ${to}`;
+        dateLabel.textContent = reference.date ? formatDate.format(new Date(reference.date)) : "";
+        rateStatus.textContent = from === to ? "Aynı para birimi seçili." : "";
         showAmount();
     } catch {
-        if (pendingRequest === request) rateLabel.textContent = "Kur alınamadı";
+        if (pendingRequest !== request) return;
+        retry.hidden = false;
+        rateStatus.textContent = "Kur alınamadı. Bağlantını kontrol edip yeniden dene.";
     }
 }
 
 amount.addEventListener("input", showAmount);
 source.addEventListener("change", loadRate);
 target.addEventListener("change", loadRate);
+retry.addEventListener("click", loadRate);
+swap.addEventListener("click", () => {
+    [source.value, target.value] = [target.value, source.value];
+    loadRate();
+});
+
 timeButtons.forEach((button) => {
     button.addEventListener("click", () => {
         timeButtons.forEach((item) => item.classList.toggle("active", item === button));
